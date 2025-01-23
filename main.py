@@ -1,26 +1,31 @@
 import mysql.connector
-import settings
+import setting
 
 connection = mysql.connector.connect(
-    host=settings.host,
-    user=settings.user,
-    password=settings.password,
-    port=settings.port,
+    host=setting.host,
+    user=setting.user,
+    password=setting.password,
+    port=setting.port,
     # database=settings.db_name
 )
 
 cursor = connection.cursor()
 
-cursor.execute("USE shop")
+cursor.execute("use education")
 
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS hodimlar (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(64),
-    department VARCHAR(128),
-    locaiton TEXT
+create table if not exists student (
+    id int auto_increment primary key,
+    name varchar(64),
+    grade int,
+    age int
 )
 ''')
+
+cursor.execute("""insert into student (name, grade, age)
+            values ('nurbek', 2, 17), ('sherbek', 3, 18);""")
+
+cursor.execute('select * from student')
 
 # cursor.execute("SHOW TABLES")
 
