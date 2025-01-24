@@ -1,45 +1,44 @@
 import mysql.connector
-import setting
-
-connection = mysql.connector.connect(
-    host=setting.host,
-    user=setting.user,
-    password=setting.password,
-    port=setting.port,
-    # database=settings.db_name
+import settings
+from db import (
+    create_books_table,
+    insert_book,
+    show_all_books,
 )
 
-cursor = connection.cursor()
 
-cursor.execute("use education")
+if __name__ == "__main__":
+    connection = mysql.connector.connect(
+        host=settings.host,
+        user=settings.user,
+        password=settings.password,
+        port=settings.port
+    )
 
-cursor.execute('''
-create table if not exists student (
-    id int auto_increment primary key,
-    name varchar(64),
-    grade int,
-    age int
-)
-''')
+    cursor = connection.cursor()
 
-cursor.execute("""insert into student (name, grade, age)
-            values ('nurbek', 2, 17), ('sherbek', 3, 18);""")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {settings.db_name}")
+    cursor.execute(f"USE {settings.db_name}")
 
-cursor.execute('select * from student')
+    # create table
+    create_books_table(cursor)
+    connection.commit()
 
-# cursor.execute("SHOW TABLES")
+    # insert books
+    insert_book(
+        cursor=cursor,
+        title="Hamsa",
+        author="Alisher Navoiy",
+        published_year=1470,
+        genre='Roman',
+        price=20,
+        available=True
+    )
+    connection.commit()
 
-rows = cursor.fetchall()
+    # show books
+    show_all_books(cursor)
 
-print(rows)
-
-cursor.close()
-connection.close()
-
-
-# educaiton db
-# students table (id, name, grade, age)
-# 10 students
-# select all
-# filter age increasing
-
+    # close
+    cursor.close()
+    connection.close()
